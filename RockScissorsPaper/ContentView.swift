@@ -15,27 +15,41 @@ struct ContentView: View {
     @State private var endGame = false
     var moves = ["Rock", "Paper", "Scissors"]
     var body: some View {
-        VStack {
-            Text("\(score)")
-            Text("App move: \(moves[appSelect])")
-            Text("Player should: \(shouldWin ? "Win": "Lose")")
-            HStack {
-                ForEach(0 ..< 3) { number in
-                    Button(action: {
-                        self.buttonTapped(number)
-                    }) {
-                        Text("\(moves[number])")
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [.blue, .gray]), startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea(.all)
+            VStack {
+                Text("Score: \(score)")
+                    .foregroundColor(.white)
+                    .font(.largeTitle)
+                    .padding()
+                Text("App move: \(moves[appSelect])")
+                    .foregroundColor(.white)
+                    .font(.largeTitle)
+                    .padding()
+                Text("Player should: \(shouldWin ? "Win": "Lose")")
+                    .foregroundColor(shouldWin ? .green : .red)
+                    .font(.largeTitle)
+                    .padding()
+                HStack {
+                    ForEach(0 ..< 3) { number in
+                        Button(action: {
+                            self.buttonTapped(number)
+                        }) {
+                            Image(moves[number])
+                                .padding()
+                        }
                     }
                 }
             }
-        }
-        .alert(isPresented: $endGame) {
-            Alert(title: Text("End of Round"), message: Text("Your Score: \(score)"), dismissButton: .default(Text("OK")) {
-                score = 0
-                gamesCount = 0
-                appSelect = Int.random(in: 0...2)
-                shouldWin = Bool.random()
-            })
+            .alert(isPresented: $endGame) {
+                Alert(title: Text("End of Round"), message: Text("Your Score: \(score)"), dismissButton: .default(Text("OK")) {
+                    score = 0
+                    gamesCount = 0
+                    appSelect = Int.random(in: 0...2)
+                    shouldWin = Bool.random()
+                })
+            }
         }
     }
     
@@ -103,7 +117,7 @@ struct ContentView: View {
         appSelect = Int.random(in: 0...2)
         shouldWin = Bool.random()
         gamesCount += 1
-        if (gamesCount == 9) {
+        if (gamesCount == 10) {
             endGame = true
         }
     }
