@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+struct Title: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .foregroundColor(.white)
+            .font(.largeTitle)
+            .padding()
+    }
+}
+
+extension View {
+    func titleStyle() -> some View {
+        self.modifier(Title())
+    }
+}
+
 struct ContentView: View {
     @State private var score = 0
     @State private var appSelect = Int.random(in: 0...2)
@@ -20,13 +35,9 @@ struct ContentView: View {
                 .ignoresSafeArea(.all)
             VStack {
                 Text("Score: \(score)")
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding()
+                    .titleStyle()
                 Text("App move: \(moves[appSelect])")
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding()
+                    .titleStyle()
                 Text("Player should: \(shouldWin ? "Win": "Lose")")
                     .foregroundColor(shouldWin ? .green : .red)
                     .font(.largeTitle)
@@ -44,13 +55,17 @@ struct ContentView: View {
             }
             .alert(isPresented: $endGame) {
                 Alert(title: Text("End of Round"), message: Text("Your Score: \(score)"), dismissButton: .default(Text("OK")) {
-                    score = 0
-                    gamesCount = 0
-                    appSelect = Int.random(in: 0...2)
-                    shouldWin = Bool.random()
+                    endOfGame()
                 })
             }
         }
+    }
+    
+    func endOfGame() {
+        score = 0
+        gamesCount = 0
+        appSelect = Int.random(in: 0...2)
+        shouldWin = Bool.random()
     }
     
     func buttonTapped(_ number: Int) {
